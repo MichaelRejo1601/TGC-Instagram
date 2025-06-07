@@ -11,12 +11,12 @@ def test_clean_followers(browser, login_vars: dict, log, followers_list):
     
     question_follower(page, login_vars, log, followers_list)    
     
-    choice = input("Please Enter 'CONFIRM' to confirm removal of following users: ")
     
-            
     removal_set = load_usernames_to_set(log, removal_only=True)
     
     print(f"Removing following users: {removal_set}")
+    
+    choice = input("Please Enter 'CONFIRM' to confirm removal of following users: ")
     
     if choice=="CONFIRM":
         removal_page_1 = context.new_page()

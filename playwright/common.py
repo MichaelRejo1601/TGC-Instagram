@@ -1,6 +1,6 @@
 from playwright.sync_api import expect, Page
 import tkinter as tk
-
+import time
 
 def go_to_profile(page: Page, login_vars: dict):
     page.goto(f"https://www.instagram.com/{login_vars["username"]}/")
@@ -12,7 +12,6 @@ def load_usernames_to_set(file, removal_only=False):
     usernames = set()
 
     for line in file:
-        print(line)
         line = line.strip()
         # Skip empty lines and lines that aren't likely usernames
         if not line:
@@ -159,35 +158,46 @@ def question_follower(page: Page, login_vars: dict, log, followers_list: list):
 def remove_followers(removal_page_1, removal_page_2, removal_set):
     
     with open("removals.log", "a+") as file:
-
+        
+        file.write("Starting Cleanse\n")
+        file.flush()
+        
         for follower in removal_set:
-            
+            ####FIRST PAGE
             text_box_1 = removal_page_1.get_by_role("dialog").get_by_role("textbox")
             text_box_1.fill(follower)
             
+            removal_page_1.wait_for_load_state()
+            time.sleep(1)
+            
             profile = removal_page_1.get_by_role("dialog").get_by_role("link").filter(visible="True")
-            if profile.count() != 2: #1 entry else pass
-                continue
+            if profile.count() == 2: #1 entry else pass
+                
+                removal_button_1 = removal_page_1.get_by_role("dialog").get_by_role("button", name="Remove")
+                removal_button_1.click()
+                remove_follower_button_1 = removal_page_1.get_by_role("button", name="Remove")
+                remove_follower_button_1.click()
+                text_box_1.fill("")
+                
+                file.write(follower + ":followers\n")
+                file.flush()
             
-            removal_button_1 = removal_page_1.get_by_role("dialog").get_by_role("button", name="Remove")
-            removal_button_1.click()
-            remove_follower_button_1 = removal_page_1.get_by_role("button", name="Remove")
-            remove_follower_button_1.click()
-            text_box_1.fill("")
-            
+            ######### SECOND PAGE
             text_box_2 = removal_page_2.get_by_role("dialog").get_by_role("textbox")
-            text_box_2.fill(follower + ":followers\n")
+            text_box_2.fill(follower)
             
-            profile = removal_page_2.get_by_role("dialog").get_by_role("link").filter(visible="True")
-            if profile.count() != 2: #1 entry else pass
-                continue
-            
-            removal_button_2 = removal_page_2.get_by_role("dialog").get_by_role("button", name="Following")
-            removal_button_2.click()
-            unfollow_button_2 = removal_page_2.get_by_role("button", name="Unfollow")
-            unfollow_button_2.click()
-            text_box_2.fill("")
+            removal_page_2.wait_for_load_state()
+            time.sleep(1)
 
-            file.write(follower + ":following\n")
-            file.flush()
+            profile = removal_page_2.get_by_role("dialog").get_by_role("link").filter(visible="True")
+            if profile.count() == 2: #1 entry else pass
+            
+                removal_button_2 = removal_page_2.get_by_role("dialog").get_by_role("button", name="Following")
+                removal_button_2.click()
+                unfollow_button_2 = removal_page_2.get_by_role("button", name="Unfollow")
+                unfollow_button_2.click()
+                text_box_2.fill("")
+
+                file.write(follower + ":following\n")
+                file.flush()
         
