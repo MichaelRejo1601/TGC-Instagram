@@ -1,6 +1,7 @@
 from playwright.sync_api import expect, Page
 import tkinter as tk
 import time
+import random
 
 def go_to_profile(page: Page, login_vars: dict):
     page.goto(f"https://www.instagram.com/{login_vars["username"]}/")
@@ -111,13 +112,24 @@ def question_follower(page: Page, login_vars: dict, log, followers_list: list):
         def on_green_button_click():
             print("Green button clicked!")
             log.write(follower["string_list_data"][0]["value"] + ":Y\n" )
+            log.flush()
             root.quit()
             root.destroy()
             
         def on_yellow_button_click():
-            print("Yellow button clicked!")
-            root.quit()
-            root.destroy()
+            if random.choice([True, False]):
+                print("Yellow button clicked! Action Green taken.")
+                log.write(follower["string_list_data"][0]["value"] + ":Y\n" )
+                log.flush()
+                root.quit()
+                root.destroy()
+                
+            else:
+                print("Yellow button clicked! Action B taken.")
+                log.write(follower["string_list_data"][0]["value"] + ":N\n")
+                log.flush()
+                root.quit()
+                root.destroy()
             
         def on_red_button_click():
             print("Red button clicked!")
