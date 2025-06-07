@@ -12,4 +12,10 @@ def login_vars():
 def log():
     with open("thegreatcleansing.log", 'a+') as file:
         yield file
+
+@pytest.fixture()
+def followers_list():
+    with open("followers_1.json", 'r') as file:
+        data = json.load(file)
     
+    yield data

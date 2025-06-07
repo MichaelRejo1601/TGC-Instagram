@@ -1,0 +1,1 @@
+pytest --browser-channel msedge --headed -s
