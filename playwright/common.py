@@ -125,7 +125,7 @@ def question_follower(page: Page, login_vars: dict, log, followers_list: list):
                 root.destroy()
                 
             else:
-                print("Yellow button clicked! Action B taken.")
+                print("Yellow button clicked! Action Red taken.")
                 log.write(follower["string_list_data"][0]["value"] + ":N\n")
                 log.flush()
                 root.quit()
